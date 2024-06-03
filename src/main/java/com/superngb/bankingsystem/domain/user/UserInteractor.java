@@ -24,13 +24,13 @@ public class UserInteractor implements UserInputBoundary {
     @Override
     public ResponseModel<?> createUser(UserPostModel userPostModel) {
         if (userDataAccess.findByLogin(userPostModel.getLogin()) != null) {
-            return ResponseModel.builder().code(403).body("This login (" + userPostModel.getLogin() + ") has already been registered").build();
+            return ResponseModel.builder().code(403).body("Логин (" + userPostModel.getLogin() + ") уже используется").build();
         }
         if (userDataAccess.findByEmail(userPostModel.getEmail()) != null) {
-            return ResponseModel.builder().code(403).body("This email (" + userPostModel.getEmail() + ") has already been registered").build();
+            return ResponseModel.builder().code(403).body("Email (" + userPostModel.getEmail() + ") уже используется").build();
         }
         if (userDataAccess.findByPhone(userPostModel.getPhone()) != null) {
-            return ResponseModel.builder().code(403).body("This phone (" + userPostModel.getPhone() + ") has already been registered").build();
+            return ResponseModel.builder().code(403).body("Телефонный номер (" + userPostModel.getPhone() + ") уже используется").build();
         }
 
         return ResponseModel.builder().code(201).body(UserDtoModel.mapper(userDataAccess.save(User.builder()
@@ -38,7 +38,7 @@ public class UserInteractor implements UserInputBoundary {
                 .firstName(userPostModel.getFirstName())
                 .patronymic(userPostModel.getPatronymic())
                 .dateOfBirth(userPostModel.getDateOfBirth())
-                .phone(userPostModel.getPhone())
+                .phone(createPhoneNumber(userPostModel.getPhone()))
                 .email(userPostModel.getEmail())
                 .login(userPostModel.getLogin())
                 .password(userPostModel.getPassword())
@@ -47,6 +47,11 @@ public class UserInteractor implements UserInputBoundary {
                         .initialBalance(userPostModel.getInitialBalance())
                         .build())
                 ).build()))).build();
+    }
+
+    private String createPhoneNumber(String phoneNumber) {
+        return String.format("(%s) %s-%s",
+                phoneNumber.substring(0, 3), phoneNumber.substring(3, 6), phoneNumber.substring(6));
     }
 
     @Override
