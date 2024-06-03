@@ -58,7 +58,7 @@ public class UserInteractor implements UserInputBoundary {
     public ResponseModel<?> deleteUser(Long id) {
         User user = userDataAccess.deleteById(id);
         return (user == null)
-                ? ResponseModel.builder().code(404).body("User with userId = " + id.toString() + " not found").build()
+                ? ResponseModel.builder().code(404).body("Пользователь с id (" + id.toString() + ") не найден").build()
                 : ResponseModel.builder().code(200).body(UserDtoModel.mapper(user)).build();
     }
 
