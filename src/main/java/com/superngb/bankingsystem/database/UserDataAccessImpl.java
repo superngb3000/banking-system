@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class AdminUserDataAccessImpl implements AdminUserDataAccess {
+public class UserDataAccessImpl implements AdminUserDataAccess {
 
     private final UserRepository userRepository;
 
-    public AdminUserDataAccessImpl(UserRepository userRepository) {
+    public UserDataAccessImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

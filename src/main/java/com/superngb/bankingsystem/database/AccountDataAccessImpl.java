@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class AdminAccountDataAccessImpl implements AccountDataAccess, AdminAccountDataAccess {
+public class AccountDataAccessImpl implements AccountDataAccess, AdminAccountDataAccess {
 
     private final AccountRepository accountRepository;
 
-    public AdminAccountDataAccessImpl(AccountRepository accountRepository) {
+    public AccountDataAccessImpl(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 
