@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Builder
 @Getter
@@ -30,11 +31,13 @@ public class User {
     @Column(name = "dateOfBirth", columnDefinition = "DATE")
     private Date dateOfBirth;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "phone")
-    private String phone;
+    private List<String> phone;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "email")
-    private String email;
+    private List<String> email;
 
     @Column(name = "login")
     private String login;

@@ -12,6 +12,4 @@ public interface AccountDataAccess {
     Account findById(Long id);
 
     List<Account> getAccounts();
-
-    Account deleteById(Long id);
 }

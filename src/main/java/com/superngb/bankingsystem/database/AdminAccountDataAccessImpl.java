@@ -1,19 +1,19 @@
 package com.superngb.bankingsystem.database;
 
 import com.superngb.bankingsystem.domain.account.AccountDataAccess;
+import com.superngb.bankingsystem.domain.admin.AdminAccountDataAccess;
 import com.superngb.bankingsystem.entuty.Account;
 import com.superngb.bankingsystem.repository.AccountRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
-public class AccountDataAccessImpl implements AccountDataAccess {
+public class AdminAccountDataAccessImpl implements AccountDataAccess, AdminAccountDataAccess {
 
     private final AccountRepository accountRepository;
 
-    public AccountDataAccessImpl(AccountRepository accountRepository) {
+    public AdminAccountDataAccessImpl(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 
@@ -30,15 +30,5 @@ public class AccountDataAccessImpl implements AccountDataAccess {
     @Override
     public List<Account> getAccounts() {
         return accountRepository.findAll();
-    }
-
-    @Override
-    public Account deleteById(Long id) {
-        Optional<Account> optionalAccount = accountRepository.findById(id);
-        if (optionalAccount.isPresent()) {
-            accountRepository.deleteById(id);
-            return optionalAccount.get();
-        }
-        return null;
     }
 }

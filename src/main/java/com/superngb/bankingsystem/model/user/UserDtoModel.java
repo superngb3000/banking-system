@@ -12,13 +12,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDtoModel {
+
     private Long id;
     private String lastName;
     private String firstName;
     private String patronymic;
     private Date dateOfBirth;
-    private String phone;
-    private String email;
+    private List<String> phone;
+    private List<String> email;
     private String login;
     private Long accountId;
 

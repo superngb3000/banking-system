@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseModel<T> {
+
     private Integer code;
     private T body;
 }

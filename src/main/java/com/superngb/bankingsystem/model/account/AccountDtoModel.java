@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountDtoModel {
+
     private Long id;
     private BigDecimal balance;
     private BigDecimal initialBalance;

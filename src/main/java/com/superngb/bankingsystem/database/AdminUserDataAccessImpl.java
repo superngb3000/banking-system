@@ -1,35 +1,24 @@
 package com.superngb.bankingsystem.database;
 
-import com.superngb.bankingsystem.domain.user.UserDataAccess;
+import com.superngb.bankingsystem.domain.admin.AdminUserDataAccess;
 import com.superngb.bankingsystem.entuty.User;
 import com.superngb.bankingsystem.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
-public class UserDataAccessImpl implements UserDataAccess {
+public class AdminUserDataAccessImpl implements AdminUserDataAccess {
 
     private final UserRepository userRepository;
 
-    public UserDataAccessImpl(UserRepository userRepository) {
+    public AdminUserDataAccessImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public User save(User user) {
         return userRepository.save(user);
-    }
-
-    @Override
-    public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
     }
 
     @Override

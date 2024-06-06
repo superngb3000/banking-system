@@ -1,7 +1,11 @@
 package com.superngb.bankingsystem.model.user;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
+
+import java.util.List;
 
 
 @Getter
@@ -13,7 +17,7 @@ public class UserUpdateModel {
     @NotNull
     private Long id;
     @Pattern(regexp = "(^$|[0-9]{10})")
-    private String phone;
+    private List<String> phone;
     @Email
-    private String email;
+    private List<String> email;
 }
