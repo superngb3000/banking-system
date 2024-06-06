@@ -5,6 +5,7 @@ import com.superngb.bankingsystem.entuty.User;
 import com.superngb.bankingsystem.model.ResponseModel;
 import com.superngb.bankingsystem.model.user.UserDtoModel;
 import com.superngb.bankingsystem.model.user.UserPostModel;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,11 +14,15 @@ import java.util.List;
 @Service
 public class AdminUserInteractor implements AdminUserInputBoundary {
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private final AdminUserDataAccess adminUserDataAccess;
     private final AdminAccountDataAccess adminAccountDataAccess;
 
-    public AdminUserInteractor(AdminUserDataAccess adminUserDataAccess,
+    public AdminUserInteractor(BCryptPasswordEncoder bCryptPasswordEncoder,
+                               AdminUserDataAccess adminUserDataAccess,
                                AdminAccountDataAccess adminAccountDataAccess) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.adminUserDataAccess = adminUserDataAccess;
         this.adminAccountDataAccess = adminAccountDataAccess;
     }
@@ -47,7 +52,7 @@ public class AdminUserInteractor implements AdminUserInputBoundary {
                 .phone(phoneList)
                 .email(emailList)
                 .login(userPostModel.getLogin())
-                .password(userPostModel.getPassword())
+                .password(bCryptPasswordEncoder.encode(userPostModel.getPassword()))
                 .account(adminAccountDataAccess.save(Account.builder()
                         .balance(userPostModel.getInitialBalance())
                         .initialBalance(userPostModel.getInitialBalance())
