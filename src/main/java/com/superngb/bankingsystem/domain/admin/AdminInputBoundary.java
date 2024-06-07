@@ -5,7 +5,7 @@ import com.superngb.bankingsystem.model.user.UserPostModel;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface AdminUserInputBoundary {
+public interface AdminInputBoundary {
 
     ResponseModel<?> createUser(UserPostModel userPostModel);
 

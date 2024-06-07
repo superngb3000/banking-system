@@ -2,7 +2,7 @@ package com.superngb.bankingsystem.database;
 
 import com.superngb.bankingsystem.domain.account.AccountDataAccess;
 import com.superngb.bankingsystem.domain.admin.AdminAccountDataAccess;
-import com.superngb.bankingsystem.entuty.Account;
+import com.superngb.bankingsystem.entity.Account;
 import com.superngb.bankingsystem.repository.AccountRepository;
 import org.springframework.stereotype.Component;
 

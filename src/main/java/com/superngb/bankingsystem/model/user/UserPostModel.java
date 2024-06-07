@@ -20,7 +20,7 @@ public class UserPostModel {
     private String patronymic;
     @Past
     private Date dateOfBirth;
-    @Pattern(regexp = "(^$|[0-9]{10})")
+    @Pattern(regexp = "^[0-9]{10}$")
     private String phone;
     @Email
     private String email;

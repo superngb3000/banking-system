@@ -1,6 +1,6 @@
 package com.superngb.bankingsystem.domain.admin;
 
-import com.superngb.bankingsystem.entuty.User;
+import com.superngb.bankingsystem.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component

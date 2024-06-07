@@ -1,4 +1,4 @@
-package com.superngb.bankingsystem.entuty;
+package com.superngb.bankingsystem.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,25 +19,25 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "lastName")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "firstName")
+    @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "patronymic")
     private String patronymic;
 
-    @Column(name = "dateOfBirth", columnDefinition = "DATE")
+    @Column(name = "date_of_birth", columnDefinition = "DATE")
     private Date dateOfBirth;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "phone")
-    private List<String> phone;
+    @JoinTable(name = "user_phone")
+    private List<String> phoneList;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "email")
-    private List<String> email;
+    @JoinTable(name = "user_email")
+    private List<String> emailList;
 
     @Column(name = "login")
     private String login;

@@ -1,6 +1,6 @@
 package com.superngb.bankingsystem.model.user;
 
-import com.superngb.bankingsystem.entuty.User;
+import com.superngb.bankingsystem.entity.User;
 import lombok.*;
 
 import java.util.Date;
@@ -18,8 +18,8 @@ public class UserDtoModel {
     private String firstName;
     private String patronymic;
     private Date dateOfBirth;
-    private List<String> phone;
-    private List<String> email;
+    private List<String> phoneList;
+    private List<String> emailList;
     private String login;
     private Long accountId;
 
@@ -30,8 +30,8 @@ public class UserDtoModel {
                 object.getFirstName(),
                 object.getPatronymic(),
                 object.getDateOfBirth(),
-                object.getPhone(),
-                object.getEmail(),
+                object.getPhoneList(),
+                object.getEmailList(),
                 object.getLogin(),
                 object.getAccount().getId()
         );

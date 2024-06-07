@@ -1,4 +1,4 @@
-package com.superngb.bankingsystem.entuty;
+package com.superngb.bankingsystem.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

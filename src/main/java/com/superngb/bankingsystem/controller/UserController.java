@@ -4,7 +4,9 @@ import com.superngb.bankingsystem.domain.account.AccountInputBoundary;
 import com.superngb.bankingsystem.domain.user.UserInputBoundary;
 import com.superngb.bankingsystem.model.ResponseModel;
 import com.superngb.bankingsystem.model.account.TransferRequestModel;
-import com.superngb.bankingsystem.model.user.UserUpdateModel;
+import com.superngb.bankingsystem.model.user.UserUpdateEmailListModel;
+import com.superngb.bankingsystem.model.user.UserUpdatePhoneListModel;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +29,15 @@ public class UserController {
         return new ResponseEntity<>(responseModel.getBody(), HttpStatus.valueOf(responseModel.getCode()));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody UserUpdateModel model) {
-        ResponseModel<?> responseModel = userInputBoundary.updateUser(model);
+    @PutMapping("/phone")
+    public ResponseEntity<?> updateUserPhoneList(@RequestBody @Valid UserUpdatePhoneListModel model) {
+        ResponseModel<?> responseModel = userInputBoundary.updateUserPhoneList(model);
+        return new ResponseEntity<>(responseModel.getBody(), HttpStatus.valueOf(responseModel.getCode()));
+    }
+
+    @PutMapping("/email")
+    public ResponseEntity<?> updateUserEmailList(@RequestBody @Valid UserUpdateEmailListModel model) {
+        ResponseModel<?> responseModel = userInputBoundary.updateUserEmailList(model);
         return new ResponseEntity<>(responseModel.getBody(), HttpStatus.valueOf(responseModel.getCode()));
     }
 }

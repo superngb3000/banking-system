@@ -1,6 +1,6 @@
 package com.superngb.bankingsystem.repository;
 
-import com.superngb.bankingsystem.entuty.User;
+import com.superngb.bankingsystem.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +11,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByLogin(String login);
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailList(String email);
 
-    Optional<User> findByPhone(String phone);
+    Optional<User> findByPhoneList(String phone);
+
+    boolean existsByEmailList(String email);
+
+    boolean existsByPhoneList(String phone);
 }

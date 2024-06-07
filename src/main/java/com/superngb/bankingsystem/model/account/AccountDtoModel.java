@@ -1,6 +1,6 @@
 package com.superngb.bankingsystem.model.account;
 
-import com.superngb.bankingsystem.entuty.Account;
+import com.superngb.bankingsystem.entity.Account;
 import lombok.*;
 
 import java.math.BigDecimal;

@@ -1,14 +1,15 @@
 package com.superngb.bankingsystem.database;
 
 import com.superngb.bankingsystem.domain.admin.AdminUserDataAccess;
-import com.superngb.bankingsystem.entuty.User;
+import com.superngb.bankingsystem.domain.user.UserUserDataAccess;
+import com.superngb.bankingsystem.entity.User;
 import com.superngb.bankingsystem.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
-public class UserDataAccessImpl implements AdminUserDataAccess {
+public class UserDataAccessImpl implements AdminUserDataAccess, UserUserDataAccess {
 
     private final UserRepository userRepository;
 
@@ -19,6 +20,21 @@ public class UserDataAccessImpl implements AdminUserDataAccess {
     @Override
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public boolean existsByEmailList(String email) {
+        return userRepository.existsByEmailList(email);
+    }
+
+    @Override
+    public boolean existsByPhoneList(String phone) {
+        return userRepository.existsByPhoneList(phone);
     }
 
     @Override
@@ -38,11 +54,11 @@ public class UserDataAccessImpl implements AdminUserDataAccess {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+        return userRepository.findByEmailList(email).orElse(null);
     }
 
     @Override
     public User findByPhone(String phone) {
-        return userRepository.findByPhone(phone).orElse(null);
+        return userRepository.findByPhoneList(phone).orElse(null);
     }
 }

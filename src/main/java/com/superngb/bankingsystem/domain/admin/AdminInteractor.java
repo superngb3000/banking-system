@@ -1,10 +1,12 @@
 package com.superngb.bankingsystem.domain.admin;
 
-import com.superngb.bankingsystem.entuty.Account;
-import com.superngb.bankingsystem.entuty.User;
+import com.superngb.bankingsystem.entity.Account;
+import com.superngb.bankingsystem.entity.User;
 import com.superngb.bankingsystem.model.ResponseModel;
 import com.superngb.bankingsystem.model.user.UserDtoModel;
 import com.superngb.bankingsystem.model.user.UserPostModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AdminUserInteractor implements AdminUserInputBoundary {
+public class AdminInteractor implements AdminInputBoundary {
+
+    private final static Logger logger = LoggerFactory.getLogger(AdminInteractor.class);
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final AdminUserDataAccess adminUserDataAccess;
     private final AdminAccountDataAccess adminAccountDataAccess;
 
-    public AdminUserInteractor(BCryptPasswordEncoder bCryptPasswordEncoder,
-                               AdminUserDataAccess adminUserDataAccess,
-                               AdminAccountDataAccess adminAccountDataAccess) {
+    public AdminInteractor(BCryptPasswordEncoder bCryptPasswordEncoder,
+                           AdminUserDataAccess adminUserDataAccess,
+                           AdminAccountDataAccess adminAccountDataAccess) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.adminUserDataAccess = adminUserDataAccess;
         this.adminAccountDataAccess = adminAccountDataAccess;
@@ -30,13 +34,19 @@ public class AdminUserInteractor implements AdminUserInputBoundary {
     @Override
     public ResponseModel<?> createUser(UserPostModel userPostModel) {
         if (adminUserDataAccess.findByLogin(userPostModel.getLogin()) != null) {
-            return ResponseModel.builder().code(403).body("Логин (" + userPostModel.getLogin() + ") уже используется").build();
+            String message = String.format("Логин (%s) уже используется.", userPostModel.getLogin());
+            logger.warn(message);
+            return ResponseModel.builder().code(403).body(message).build();
         }
         if (adminUserDataAccess.findByEmail(userPostModel.getEmail()) != null) {
-            return ResponseModel.builder().code(403).body("Email (" + userPostModel.getEmail() + ") уже используется").build();
+            String message = String.format("Email (%s) уже используется.", userPostModel.getEmail());
+            logger.warn(message);
+            return ResponseModel.builder().code(403).body(message).build();
         }
         if (adminUserDataAccess.findByPhone(createPhoneNumber(userPostModel.getPhone())) != null) {
-            return ResponseModel.builder().code(403).body("Телефонный номер (" + userPostModel.getPhone() + ") уже используется").build();
+            String message = String.format("Телефонный номер (%s) уже используется.", userPostModel.getPhone());
+            logger.warn(message);
+            return ResponseModel.builder().code(403).body(message).build();
         }
 
         List<String> phoneList = new ArrayList<>();
@@ -44,20 +54,24 @@ public class AdminUserInteractor implements AdminUserInputBoundary {
         List<String> emailList = new ArrayList<>();
         emailList.add(userPostModel.getEmail());
 
-        return ResponseModel.builder().code(201).body(UserDtoModel.mapper(adminUserDataAccess.save(User.builder()
+        User user = adminUserDataAccess.save(User.builder()
                 .lastName(userPostModel.getLastName())
                 .firstName(userPostModel.getFirstName())
                 .patronymic(userPostModel.getPatronymic())
                 .dateOfBirth(userPostModel.getDateOfBirth())
-                .phone(phoneList)
-                .email(emailList)
+                .phoneList(phoneList)
+                .emailList(emailList)
                 .login(userPostModel.getLogin())
                 .password(bCryptPasswordEncoder.encode(userPostModel.getPassword()))
                 .account(adminAccountDataAccess.save(Account.builder()
                         .balance(userPostModel.getInitialBalance())
                         .initialBalance(userPostModel.getInitialBalance())
                         .build())
-                ).build()))).build();
+                ).build());
+
+        UserDtoModel userDtoModel = UserDtoModel.mapper(user);
+        logger.info("Создан пользователь: {}.", userDtoModel);
+        return ResponseModel.builder().code(201).body(userDtoModel).build();
     }
 
     private String createPhoneNumber(String phoneNumber) {
@@ -68,8 +82,13 @@ public class AdminUserInteractor implements AdminUserInputBoundary {
     @Override
     public ResponseModel<?> deleteUser(Long id) {
         User user = adminUserDataAccess.deleteById(id);
-        return (user == null)
-                ? ResponseModel.builder().code(404).body("Пользователь с id (" + id.toString() + ") не найден").build()
-                : ResponseModel.builder().code(200).body(UserDtoModel.mapper(user)).build();
+        if (user == null) {
+            String message = String.format("Пользователь с id (%s) не найден.", id.toString());
+            logger.warn(message);
+            return ResponseModel.builder().code(404).body(message).build();
+        }
+        String message = String.format("Пользователь с id (%s) удален.", id.toString());
+        logger.info(message);
+        return ResponseModel.builder().code(200).body(message).build();
     }
 }

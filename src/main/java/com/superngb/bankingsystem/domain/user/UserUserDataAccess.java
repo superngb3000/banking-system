@@ -1,6 +1,6 @@
 package com.superngb.bankingsystem.domain.user;
 
-import com.superngb.bankingsystem.entuty.User;
+import com.superngb.bankingsystem.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,9 +10,7 @@ public interface UserUserDataAccess {
 
     User findById(Long id);
 
-    User deleteById(Long id);
+    boolean existsByEmailList(String email);
 
-    User findByEmail(String email);
-
-    User findByPhone(String phone);
+    boolean existsByPhoneList(String phone);
 }

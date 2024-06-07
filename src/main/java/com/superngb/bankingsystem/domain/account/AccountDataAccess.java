@@ -1,6 +1,6 @@
 package com.superngb.bankingsystem.domain.account;
 
-import com.superngb.bankingsystem.entuty.Account;
+import com.superngb.bankingsystem.entity.Account;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
