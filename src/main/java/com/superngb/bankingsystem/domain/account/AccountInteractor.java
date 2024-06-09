@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -17,18 +18,16 @@ import java.util.List;
 @Service
 public class AccountInteractor implements AccountInputBoundary {
 
+    private final static Logger logger = LoggerFactory.getLogger(AccountInteractor.class);
     private final BigDecimal multiplicand = BigDecimal.valueOf(1.05);
     private final BigDecimal maxCoefficient = BigDecimal.valueOf(2.07);
-
-    private final static Logger logger = LoggerFactory.getLogger(AccountInteractor.class);
-
     private final AccountDataAccess accountDataAccess;
 
     public AccountInteractor(AccountDataAccess accountDataAccess) {
         this.accountDataAccess = accountDataAccess;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     @Override
     public ResponseModel<?> transferMoney(TransferRequestModel transferRequestModel) {
         Long from = transferRequestModel.getFrom();
@@ -93,7 +92,7 @@ public class AccountInteractor implements AccountInputBoundary {
     }
 
     @Scheduled(fixedRate = 60000)
-    public void accrueInterest() {
+    public void accrueInterestForAll() {
         List<Account> accountList = accountDataAccess.getAccounts();
         for (Account account : accountList) {
             BigDecimal balance = account.getBalance().setScale(2, RoundingMode.DOWN);
@@ -106,17 +105,20 @@ public class AccountInteractor implements AccountInputBoundary {
                     account.setCanAccrueInterest(false);
                     logger.info("Невозможно начислить проценты на счет с id ({}). Текущий баланс ({}) составляет {}% от начального депозита.",
                             account.getId(), balance, balance.divide(initialBalance, 2, RoundingMode.DOWN).multiply(BigDecimal.valueOf(100)).setScale(0, RoundingMode.DOWN));
-                } else {
-                    BigDecimal buff = balance.multiply(multiplicand).setScale(2, RoundingMode.DOWN);
-                    if (buff.divide(initialBalance, 2, RoundingMode.DOWN).compareTo(maxCoefficient) != -1) {
-                        buff = initialBalance.multiply(maxCoefficient);
-                    }
-                    account.setBalance(buff);
-                    accountDataAccess.save(account);
-                    logger.info("Успешное начисление процентов на счет с id ({}). Текущий баланс ({}) составляет {}% от начального депозита.",
-                            account.getId(), balance, balance.divide(initialBalance, 2, RoundingMode.DOWN).multiply(BigDecimal.valueOf(100)).setScale(0, RoundingMode.DOWN));
-                }
+                } else accrueInterestForAccount(account, balance, initialBalance);
             }
         }
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void accrueInterestForAccount(Account account, BigDecimal balance, BigDecimal initialBalance) {
+        BigDecimal buff = balance.multiply(multiplicand).setScale(2, RoundingMode.DOWN);
+        if (buff.divide(initialBalance, 2, RoundingMode.DOWN).compareTo(maxCoefficient) != -1) {
+            buff = initialBalance.multiply(maxCoefficient);
+        }
+        account.setBalance(buff);
+        accountDataAccess.save(account);
+        logger.info("Успешное начисление процентов на счет с id ({}). Текущий баланс ({}) составляет {}% от начального депозита.",
+                account.getId(), balance, balance.divide(initialBalance, 2, RoundingMode.DOWN).multiply(BigDecimal.valueOf(100)).setScale(0, RoundingMode.DOWN));
     }
 }
