@@ -1,6 +1,7 @@
 package com.superngb.bankingsystem.database;
 
 import com.superngb.bankingsystem.domain.admin.AdminUserDataAccess;
+import com.superngb.bankingsystem.domain.authorization.AuthorizationUserDataAccess;
 import com.superngb.bankingsystem.domain.search.SearchUserDataAccess;
 import com.superngb.bankingsystem.domain.user.UserUserDataAccess;
 import com.superngb.bankingsystem.entity.User;
@@ -9,11 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Optional;
 
 @Component
-public class UserDataAccessImpl implements AdminUserDataAccess, UserUserDataAccess, SearchUserDataAccess {
+public class UserDataAccessImpl implements AdminUserDataAccess, UserUserDataAccess, SearchUserDataAccess, AuthorizationUserDataAccess {
 
     private final UserRepository userRepository;
 

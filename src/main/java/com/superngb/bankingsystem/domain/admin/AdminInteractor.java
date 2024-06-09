@@ -7,6 +7,8 @@ import com.superngb.bankingsystem.model.user.UserDtoModel;
 import com.superngb.bankingsystem.model.user.UserPostModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -92,5 +94,14 @@ public class AdminInteractor implements AdminInputBoundary {
         String message = String.format("Пользователь с id (%s) удален.", id.toString());
         logger.info(message);
         return ResponseModel.builder().code(200).body(message).build();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = adminUserDataAccess.findByLogin(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return user;
     }
 }
