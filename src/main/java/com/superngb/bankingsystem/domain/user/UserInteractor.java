@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 @Service
 public class UserInteractor implements UserInputBoundary {
@@ -37,18 +34,17 @@ public class UserInteractor implements UserInputBoundary {
         if (userUpdatePhoneListModel.getPhoneList() != null) {
             List<String> phoneList = new ArrayList<>(userUpdatePhoneListModel.getPhoneList());
             for (String phone : phoneList) {
-                if (userUserDataAccess.existsByPhoneList(phone)) {
+                if (userUserDataAccess.existsByPhoneList(createPhoneNumber(phone))) {
                     String message = String.format("Телефонный номер (%s) уже используется.", phone);
                     logger.warn(message);
                     return ResponseModel.builder().code(403).body(message).build();
                 }
             }
             phoneList = phoneList.stream()
-                    .sorted()
                     .distinct()
                     .map(t -> t = createPhoneNumber(t))
                     .toList();
-            updateFieldIfNotNull(phoneList, userById::getPhoneList, userById::setPhoneList);
+            userById.setPhoneList(new ArrayList<>(phoneList));
         }
         userUserDataAccess.save(userById);
         logger.info("Список телефонных номеров пользователя с id={} обновлен {}.", userById.getId(), userById.getPhoneList());
@@ -73,21 +69,13 @@ public class UserInteractor implements UserInputBoundary {
                 }
             }
             emailList = emailList.stream()
-                    .sorted()
                     .distinct()
                     .toList();
-            updateFieldIfNotNull(emailList, userById::getEmailList, userById::setEmailList);
+            userById.setEmailList(new ArrayList<>(emailList));
         }
         userUserDataAccess.save(userById);
         logger.info("Список email пользователя с id={} обновлен {}.", userById.getId(), userById.getEmailList());
         return ResponseModel.builder().code(200).body(UserDtoModel.mapper(userById)).build();
-    }
-
-    private <T> void updateFieldIfNotNull(T newValue, Supplier<T> currentValueSupplier, Consumer<T> updateFunction) {
-        T currentValue = currentValueSupplier.get();
-        if (newValue != null && (currentValue == null || !Objects.equals(currentValue, newValue))) {
-            updateFunction.accept(newValue);
-        }
     }
 
     private String createPhoneNumber(String phoneNumber) {

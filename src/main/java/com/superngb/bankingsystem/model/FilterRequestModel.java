@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilterRequestModel {
-    private Date dateOfBirth;
+    private String dateOfBirth;
     @Pattern(regexp = "^[0-9]{10}$")
     private String phone;
     private String fullName;

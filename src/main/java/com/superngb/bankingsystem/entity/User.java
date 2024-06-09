@@ -2,6 +2,7 @@ package com.superngb.bankingsystem.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.Date;
 import java.util.List;

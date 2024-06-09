@@ -10,5 +10,5 @@ import java.util.Date;
 @Component
 public interface SearchUserDataAccess {
 
-    Page<User> filter(String phone, String email, Date dateOfBirth, String fullName, Pageable pageable);
+    Page<User> filter(String phone, String email, String dateOfBirth, String fullName, Pageable pageable);
 }

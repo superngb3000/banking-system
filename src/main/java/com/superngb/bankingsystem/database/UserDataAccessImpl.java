@@ -67,7 +67,7 @@ public class UserDataAccessImpl implements AdminUserDataAccess, UserUserDataAcce
     }
 
     @Override
-    public Page<User> filter(String phone, String email, Date dateOfBirth, String fullName, Pageable pageable) {
+    public Page<User> filter(String phone, String email, String dateOfBirth, String fullName, Pageable pageable) {
         return userRepository.filter(phone, email, dateOfBirth, fullName, pageable);
     }
 }

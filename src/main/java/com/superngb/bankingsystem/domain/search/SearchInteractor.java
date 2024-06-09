@@ -17,6 +17,7 @@ public class SearchInteractor implements SearchInputBoundary {
         this.searchUserDataAccess = searchUserDataAccess;
     }
 
+    //FIXME плавающий баг на вызове
     @Override
     public ResponseModel<?> filter(FilterRequestModel filterRequestModel, Pageable pageable) {
         Page<User> userPage = searchUserDataAccess.filter(createPhoneNumber(
