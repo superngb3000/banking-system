@@ -10,11 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -68,8 +65,8 @@ public class AdminInteractor implements AdminInputBoundary {
                 .login(userPostModel.getLogin())
                 .password(bCryptPasswordEncoder.encode(userPostModel.getPassword()))
                 .account(adminAccountDataAccess.save(Account.builder()
-                        .balance(userPostModel.getInitialBalance())
-                        .initialBalance(userPostModel.getInitialBalance())
+                        .balance(userPostModel.getInitialBalance().setScale(2, RoundingMode.DOWN))
+                        .initialBalance(userPostModel.getInitialBalance().setScale(2, RoundingMode.DOWN))
                         .canAccrueInterest(true)
                         .build())
                 ).build());
