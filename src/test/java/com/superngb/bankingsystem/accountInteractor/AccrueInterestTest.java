@@ -42,7 +42,7 @@ public class AccrueInterestTest {
         accountDataAccess.save(account1);
 
         Thread.sleep(130000);
-        assertThat(accountDataAccess.findById(1L).getBalance().setScale(2, RoundingMode.DOWN)).isEqualTo(BigDecimal.valueOf(100).setScale(2, RoundingMode.DOWN));
+        assertThat(accountDataAccess.findById(1L).getBalance().setScale(2, RoundingMode.DOWN)).isEqualTo(BigDecimal.valueOf(207).setScale(2, RoundingMode.DOWN));
     }
 
     @Test
