@@ -17,9 +17,11 @@ import java.util.List;
 @Service
 public class AccountInteractor implements AccountInputBoundary {
 
-    private final static Logger logger = LoggerFactory.getLogger(AccountInteractor.class);
     private final BigDecimal multiplicand = BigDecimal.valueOf(1.05);
     private final BigDecimal maxCoefficient = BigDecimal.valueOf(2.07);
+
+    private final static Logger logger = LoggerFactory.getLogger(AccountInteractor.class);
+
     private final AccountDataAccess accountDataAccess;
 
     public AccountInteractor(AccountDataAccess accountDataAccess) {
@@ -32,6 +34,13 @@ public class AccountInteractor implements AccountInputBoundary {
         Long from = transferRequestModel.getFrom();
         Long to = transferRequestModel.getTo();
         BigDecimal amount = transferRequestModel.getAmount().setScale(2, RoundingMode.DOWN);
+
+        if (from == to) {
+            String message = String.format("Невозможно совершить перевод средств со счета с id (%s) счет с id(%s). Счет списания совпадает со счетом начисления.",
+                    from, to);
+            logger.warn(message);
+            return ResponseModel.builder().code(403).body(message).build();
+        }
 
         if (accountDataAccess.findById(from) == null) {
             String message = String.format("Счет с id (%s) не найден.", from);
@@ -83,7 +92,7 @@ public class AccountInteractor implements AccountInputBoundary {
         return ResponseModel.builder().code(200).body(message).build();
     }
 
-    @Scheduled(fixedRate = 6000)
+    @Scheduled(fixedRate = 60000)
     public void accrueInterest() {
         List<Account> accountList = accountDataAccess.getAccounts();
         for (Account account : accountList) {
