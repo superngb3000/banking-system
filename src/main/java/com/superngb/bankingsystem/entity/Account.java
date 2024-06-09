@@ -23,4 +23,7 @@ public class Account {
 
     @Column(name = "initial_balance")
     private BigDecimal initialBalance;
+
+    @Column(name = "can_accrue_interest")
+    private boolean canAccrueInterest;
 }

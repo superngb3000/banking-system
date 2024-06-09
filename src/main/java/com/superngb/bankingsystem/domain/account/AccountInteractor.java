@@ -69,18 +69,33 @@ public class AccountInteractor implements AccountInputBoundary {
         return account.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) != -1;
     }
 
-    // TODO никогда не достигает 207% от изначального (баг или фича?)
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 6000)
     public void accrueInterest() {
+        final BigDecimal multiplicand = BigDecimal.valueOf(1.05);
+        final BigDecimal maxCoefficient = BigDecimal.valueOf(2.07);
+
         List<Account> accountList = accountDataAccess.getAccounts();
         for (Account account : accountList) {
-            BigDecimal buff = account.getBalance().multiply(BigDecimal.valueOf(1.05));
-            if (buff.divide(account.getInitialBalance()).compareTo(BigDecimal.valueOf(2.07)) != 1) {
-                account.setBalance(buff);
-                accountDataAccess.save(account);
-                logger.info("Успешное начисление процентов на счет с id ({}). Текущий баланс ({}) составляет {}% от начального депозита.", account.getId(), account.getBalance(), account.getBalance().divide(account.getInitialBalance()));
+            BigDecimal balance = account.getBalance();
+            if (!account.isCanAccrueInterest()) {
+                logger.info("Невозможно начислить проценты на счет с id ({}). Текущий баланс ({}) составляет 207% от начального депозита.",
+                        account.getId(), balance);
             } else {
-                logger.warn("Невозможно начислить проценты на счет с id ({}). Текущий баланс ({}) составляет 207% от начального депозита.", account.getId(), account.getBalance());
+                BigDecimal initialBalance = account.getInitialBalance();
+                if (balance.divide(initialBalance).compareTo(maxCoefficient) != -1) {
+                    account.setCanAccrueInterest(false);
+                    logger.info("Невозможно начислить проценты на счет с id ({}). Текущий баланс ({}) составляет 207% от начального депозита.",
+                            account.getId(), balance);
+                } else {
+                    BigDecimal buff = balance.multiply(multiplicand);
+                    if (buff.divide(initialBalance).compareTo(maxCoefficient) != -1) {
+                        buff = initialBalance.multiply(maxCoefficient);
+                    }
+                    account.setBalance(buff);
+                    accountDataAccess.save(account);
+                    logger.info("Успешное начисление процентов на счет с id ({}). Текущий баланс ({}) составляет {}% от начального депозита.",
+                            account.getId(), balance, balance.divide(initialBalance).multiply(BigDecimal.valueOf(100)));
+                }
             }
         }
     }

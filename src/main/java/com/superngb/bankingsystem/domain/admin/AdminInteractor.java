@@ -10,7 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,7 +48,7 @@ public class AdminInteractor implements AdminInputBoundary {
             return ResponseModel.builder().code(403).body(message).build();
         }
         if (adminUserDataAccess.findByPhone(createPhoneNumber(userPostModel.getPhone())) != null) {
-            String message = String.format("Телефонный номер (%s) уже используется.", userPostModel.getPhone());
+            String message = String.format("Телефонный номер (%s) уже используется.", createPhoneNumber(userPostModel.getPhone()));
             logger.warn(message);
             return ResponseModel.builder().code(403).body(message).build();
         }
@@ -66,6 +70,7 @@ public class AdminInteractor implements AdminInputBoundary {
                 .account(adminAccountDataAccess.save(Account.builder()
                         .balance(userPostModel.getInitialBalance())
                         .initialBalance(userPostModel.getInitialBalance())
+                        .canAccrueInterest(true)
                         .build())
                 ).build());
 

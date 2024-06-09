@@ -1,15 +1,19 @@
 package com.superngb.bankingsystem.database;
 
 import com.superngb.bankingsystem.domain.admin.AdminUserDataAccess;
+import com.superngb.bankingsystem.domain.search.SearchUserDataAccess;
 import com.superngb.bankingsystem.domain.user.UserUserDataAccess;
 import com.superngb.bankingsystem.entity.User;
 import com.superngb.bankingsystem.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Component
-public class UserDataAccessImpl implements AdminUserDataAccess, UserUserDataAccess {
+public class UserDataAccessImpl implements AdminUserDataAccess, UserUserDataAccess, SearchUserDataAccess {
 
     private final UserRepository userRepository;
 
@@ -60,5 +64,10 @@ public class UserDataAccessImpl implements AdminUserDataAccess, UserUserDataAcce
     @Override
     public User findByPhone(String phone) {
         return userRepository.findByPhoneList(phone).orElse(null);
+    }
+
+    @Override
+    public Page<User> filter(String phone, String email, Date dateOfBirth, String fullName, Pageable pageable) {
+        return userRepository.filter(phone, email, dateOfBirth, fullName, pageable);
     }
 }
